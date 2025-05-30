@@ -1,54 +1,41 @@
 import 'package:flutter/material.dart';
 
-/// Halaman Home sederhana dengan header custom
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF1F3F8),
-      body: Column(
-        children: [
-          // ===== HEADER =====
-          Container(
-            width: double.infinity,
-            decoration: const ShapeDecoration(
-              color: Color(0xFFFEFEFE),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: Color(0xFFEAECF0)),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 32,
-                bottom: 16,
-                left: 32,
-                right: 32,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Avatar + info
-                  Row(
-                    children: [
-                      // Avatar asset
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: const ShapeDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/images/photo_profile.png',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                          shape: OvalBorder(),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Custom Header
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/photo_profile.png',
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      // Nama + badge + jabatan
-                      Column(
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Row(
@@ -56,19 +43,17 @@ class HomeScreen extends StatelessWidget {
                               Text(
                                 'Khaerul Umam',
                                 style: TextStyle(
-                                  color: Color(0xFF2D2D2D),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
                                   fontFamily: 'Roboto',
-                                  height: 1.50,
-                                  letterSpacing: 0.15,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: 6),
                               Icon(
-                                Icons.check_circle,
-                                color: Color(0xFF6E61FF),
-                                size: 20,
+                                Icons.verified,
+                                size: 18,
+                                color: Color(0xFF785FFB),
                               ),
                             ],
                           ),
@@ -76,61 +61,330 @@ class HomeScreen extends StatelessWidget {
                           Text(
                             'UI/UX Designer',
                             style: TextStyle(
-                              color: Color(0xFF6E61FF),
-                              fontSize: 12,
                               fontFamily: 'Roboto',
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              height: 1.33,
-                              letterSpacing: -0.50,
+                              color: Color(0xFF785FFB),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    // Chat Icon
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEEF1FF),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/icons/chat.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Notification Icon
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEEF1FF),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/icons/notification.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                  // Icon chat & notif
-                  Row(
+              // Home Banner
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 96,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFF785FFB),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Stack(
                     children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const ShapeDecoration(
-                          color: Color(0xFFF4F5FF),
-                          shape: OvalBorder(),
+                      Positioned(
+                        left: 16,
+                        top: 28,
+                        child: Text(
+                          'My Work Summary',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.5,
+                          ),
                         ),
-                        child: const Icon(Icons.chat, color: Color(0xFF7A5AF8)),
                       ),
-                      const SizedBox(width: 12),
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const ShapeDecoration(
-                          color: Color(0xFFF4F5FF),
-                          shape: OvalBorder(),
-                        ),
-                        child: const Icon(
-                          Icons.notifications,
-                          color: Color(0xFF7A5AF8),
+                      Positioned(
+                        left: 16,
+                        top: 50,
+                        child: Text(
+                          'Today task & presence activity',
+                          style: TextStyle(
+                            color: Color(0xFFEDE9FF),
+                            fontSize: 13,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: -0.5,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
 
-          // ===== BODY CONTENT =====
-          const Expanded(
-            child: Center(
-              child: Text(
-                'Demo Home Page',
-                style: TextStyle(fontSize: 18, color: Colors.black54),
+              const SizedBox(height: 16),
+
+              // Today Meeting Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFFEFEFE),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header Row
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Today Meeting',
+                            style: TextStyle(
+                              color: Color(0xFF101828),
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w600,
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFEBE9FE),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '2',
+                                style: TextStyle(
+                                  color: Color(0xFF7A5AF8),
+                                  fontSize: 12,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Your schedule for the day',
+                        style: TextStyle(
+                          color: Color(0xFF475467),
+                          fontSize: 12,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Meeting Detail
+                      Container(
+                        width: double.infinity,
+                        height: 86,
+                        padding: const EdgeInsets.all(12),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFF9FAFB),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              width: 1,
+                              color: Color(0xFFEAECF0),
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  'assets/icons/meeting.png',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                                const SizedBox(width: 6),
+                                const Expanded(
+                                  child: Text(
+                                    'Townhall Meeting',
+                                    style: TextStyle(
+                                      color: Color(0xFF2A2A2A),
+                                      fontSize: 14,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  '01:30 AM - 02:00 AM',
+                                  style: TextStyle(
+                                    color: Color(0xFF475467),
+                                    fontSize: 12,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const ShapeDecoration(
+                                    shape: OvalBorder(
+                                      side: BorderSide(
+                                        width: 0.92,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/images/team1.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const ShapeDecoration(
+                                    shape: OvalBorder(
+                                      side: BorderSide(
+                                        width: 0.92,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/images/team2.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const ShapeDecoration(
+                                    shape: OvalBorder(
+                                      side: BorderSide(
+                                        width: 0.92,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/images/team3.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  '+3',
+                                  style: TextStyle(
+                                    color: Color(0xFF2A2A2A),
+                                    fontSize: 12,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFF6938EF),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Join Meet',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: -0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
