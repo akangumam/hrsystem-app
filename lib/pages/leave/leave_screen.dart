@@ -7,8 +7,12 @@ class LeaveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Leave')),
-      body: const Center(child: Text('This is the Leave Screen')),
+      body: Center(
+        child: Text(
+          'Leave Screen',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 }

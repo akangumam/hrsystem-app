@@ -25,7 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _onLogin() {
     // TODO: ganti dengan autentikasi nyata
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/main');
   }
 
   @override
@@ -34,9 +34,9 @@ class _SignInScreenState extends State<SignInScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Background image with adjustable vertical offset
+          // Background image
           Positioned(
-            top: -100, // Negatif untuk naik, positif untuk turun
+            top: -100,
             left: 0,
             right: 0,
             bottom: 0,
@@ -275,7 +275,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Sign In button styled like Get Started
+                    // Sign In button
                     GestureDetector(
                       onTap: _onLogin,
                       child: Container(
@@ -301,7 +301,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: Color(0xFFA686FF),
                               width: 1,
                             ),
-                            borderRadius: BorderRadius.circular(100),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(100),
+                            ),
                           ),
                           shadows: const [
                             BoxShadow(
@@ -371,7 +373,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFF7A5AF8)),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
                         minimumSize: const Size(double.infinity, 48),
                       ),
@@ -391,12 +393,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFF7A5AF8)),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
                         minimumSize: const Size(double.infinity, 48),
                       ),
                     ),
                     const SizedBox(height: 24),
+
                     // Footer Sign Up
                     Center(
                       child: Text.rich(
