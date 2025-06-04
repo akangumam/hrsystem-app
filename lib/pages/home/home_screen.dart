@@ -536,6 +536,7 @@ class TaskCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // ignore: sized_box_for_whitespace
           Container(
             width: 10,
             height: 10,
@@ -607,6 +608,7 @@ class TaskCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
+                  // ignore: deprecated_member_use
                   color: status1Color.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(50),
                 ),
@@ -642,6 +644,7 @@ class TaskCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
+                      // ignore: deprecated_member_use
                       color: status2Color.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(50),
                     ),
