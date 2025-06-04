@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'attendant_clock_in_screen.dart';
 
 class AttendantScreen extends StatelessWidget {
   const AttendantScreen({Key? key}) : super(key: key);
@@ -275,7 +276,14 @@ class TotalWorkingHourCard extends StatelessWidget {
             const SizedBox(height: 22),
             // Tombol Clock In Now custom gradient
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AttendantClockInScreen(),
+                  ),
+                );
+              },
               child: Container(
                 width: double.infinity,
                 height: 48,
