@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'selfie_clock_in_screen.dart';
 
 class AttendantClockInScreen extends StatefulWidget {
   const AttendantClockInScreen({Key? key}) : super(key: key);
@@ -16,8 +17,8 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
 
   // Office Location (fix, sesuai request)
   static final LatLng officeLatLng = LatLng(
-    -6.3798917031607765,
-    106.69992768789146,
+    -6.256816762938257,
+    107.18393518182965,
   );
 
   bool _isGettingLocation = false;
@@ -74,7 +75,7 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
     if (_userLatLng == null) return false;
     final Distance distance = Distance();
     double meter = distance.as(LengthUnit.Meter, _userLatLng!, officeLatLng);
-    return meter <= 100; // 100 meter
+    return meter <= 10000; // 10000 meter
   }
 
   @override
@@ -542,7 +543,13 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
                             onTap:
                                 _isInOfficeArea()
                                     ? () {
-                                      // TODO: aksi selfie absen
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  const SelfieClockInScreen(),
+                                        ),
+                                      );
                                     }
                                     : null, // Disable button jika di luar area
                             child: Ink(
