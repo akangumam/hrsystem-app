@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'selfie_clock_in_screen.dart';
 
 class AttendantClockInScreen extends StatefulWidget {
+  // ignore: use_super_parameters
   const AttendantClockInScreen({Key? key}) : super(key: key);
 
   @override
@@ -17,8 +18,8 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
 
   // Office Location (fix, sesuai request)
   static final LatLng officeLatLng = LatLng(
-    -6.256816762938257,
-    107.18393518182965,
+    -6.482329872192783,
+    106.79298359395966,
   );
 
   bool _isGettingLocation = false;
@@ -43,6 +44,7 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
 
     // Ambil posisi awal
     Position pos = await Geolocator.getCurrentPosition(
+      // ignore: deprecated_member_use
       desiredAccuracy: LocationAccuracy.high,
     );
     setState(() {
@@ -93,7 +95,9 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
             child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
+                // ignore: deprecated_member_use
                 center: officeLatLng,
+                // ignore: deprecated_member_use
                 zoom: 17.5,
                 minZoom: 5,
                 maxZoom: 19,
@@ -191,6 +195,7 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
             child: Row(
               children: [
                 Material(
+                  // ignore: deprecated_member_use
                   color: Colors.white.withOpacity(0.7),
                   shape: const CircleBorder(),
                   child: IconButton(
@@ -459,7 +464,7 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
                                         ),
                                         SizedBox(height: 2),
                                         Text(
-                                          "09:00",
+                                          "08:00",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.black,
@@ -584,6 +589,7 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
                                   'Selfie To Clock In',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
+                                    // ignore: deprecated_member_use
                                     color: Colors.white.withOpacity(
                                       _isInOfficeArea() ? 1 : 0.4,
                                     ),

@@ -1,35 +1,48 @@
-// selfie_clock_in_preview_screen.dart
-
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Pastikan tambahkan intl di pubspec.yaml
+import 'package:intl/intl.dart';
 
-class SelfieClockInPreviewScreen extends StatelessWidget {
+class SelfieClockInPreviewScreen extends StatefulWidget {
   final File imageFile;
-  final double? latitude;
-  final double? longitude;
+  final double latitude;
+  final double longitude;
 
   const SelfieClockInPreviewScreen({
     Key? key,
     required this.imageFile,
-    this.latitude,
-    this.longitude,
+    required this.latitude,
+    required this.longitude,
   }) : super(key: key);
 
   @override
+  State<SelfieClockInPreviewScreen> createState() =>
+      _SelfieClockInPreviewScreenState();
+}
+
+class _SelfieClockInPreviewScreenState
+    extends State<SelfieClockInPreviewScreen> {
+  final TextEditingController _notesController = TextEditingController();
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final dateStr = DateFormat('dd/MM/yy HH:mm a z').format(DateTime.now());
+    final now = DateTime.now();
+    final dateStr = DateFormat('dd/MM/yy HH:mm a').format(now);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F4FA),
+      backgroundColor: const Color(0xFFF7F8FA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF7F4FA),
+        backgroundColor: const Color(0xFFF7F8FA),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF101828)),
+          icon: Image.asset("assets/icons/back.png", width: 24, height: 24),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        centerTitle: true,
         title: const Text(
           'Selfie To Clock In',
           style: TextStyle(
@@ -39,175 +52,283 @@ class SelfieClockInPreviewScreen extends StatelessWidget {
             fontFamily: 'Roboto',
           ),
         ),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(26),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 12,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    // Foto preview
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
-                      child: Stack(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 20,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // FOTO + OVERLAY
+                      Stack(
                         children: [
-                          Image.file(
-                            imageFile,
-                            width: double.infinity,
-                            height: 380,
-                            fit: BoxFit.cover,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(22),
+                            child: Image.file(
+                              widget.imageFile,
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.width * 0.8,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           Positioned(
-                            left: 18,
-                            bottom: 24,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (latitude != null && longitude != null)
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Lat : ${latitude!.toStringAsFixed(5)}",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          shadows: [Shadow(blurRadius: 10)],
-                                        ),
-                                      ),
-                                      Text(
-                                        "Long : ${longitude!.toStringAsFixed(5)}",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          shadows: [Shadow(blurRadius: 10)],
-                                        ),
-                                      ),
-                                    ],
+                            left: 16,
+                            bottom: 18,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.22),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Lat : ${widget.latitude.toStringAsFixed(5)}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                      fontSize: 13,
+                                    ),
                                   ),
-                                Text(
-                                  dateStr,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    shadows: [Shadow(blurRadius: 10)],
+                                  Text(
+                                    "Long : ${widget.longitude.toStringAsFixed(5)}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                      fontSize: 13,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    dateStr + " GMT +07:00",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 14),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: const Color(0xFF7A5AF8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
+                      const SizedBox(height: 20),
+                      // RETAKE BUTTON
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(100),
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Ink(
+                              decoration: ShapeDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment(0.5, -0.0),
+                                  end: Alignment(0.5, 1.0),
+                                  colors: [
+                                    Color(0xFF8861F2),
+                                    Color(0xFF7544FB),
+                                    Color(0xFF5A2ED4),
+                                  ],
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                  side: const BorderSide(
+                                    width: 1,
+                                    color: Color(0xFFA686FF),
+                                  ),
+                                ),
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Color(0xFF6938EF),
+                                    blurRadius: 0,
+                                    offset: Offset(0, 0),
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.refresh,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Retake Photo',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.43,
+                                        letterSpacing: 0.10,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(0, 1),
+                                            blurRadius: 16,
+                                            color: Color(0xFF2D1A62),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                          minimumSize: const Size.fromHeight(50),
                         ),
-                        icon: const Icon(Icons.refresh, color: Colors.white),
-                        label: const Text(
-                          'Retake Photo',
+                      ),
+                      const SizedBox(height: 20),
+                      // CATATAN
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Clock In Notes (Optional)",
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            fontFamily: 'Roboto',
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
                           ),
                         ),
-                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      const SizedBox(height: 7),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7F8FA),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE0E5ED)),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 2,
+                        ),
+                        child: TextField(
+                          controller: _notesController,
+                          minLines: 3,
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Clock-in Notes",
+                            hintStyle: TextStyle(
+                              fontFamily: 'Roboto',
+                              color: Color(0xFFB6B6C0),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 80),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // CLOCK IN BUTTON (STICKY)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 20,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 60,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(100),
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(100),
+                      onTap: () {
+                        // Kirim _notesController.text dan file/image ke proses berikutnya
+                        Navigator.of(context).pop(true);
+                      },
+                      child: Ink(
+                        decoration: ShapeDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment(0.5, -0.0),
+                            end: Alignment(0.5, 1.0),
+                            colors: [
+                              Color(0xFF8861F2),
+                              Color(0xFF7544FB),
+                              Color(0xFF5A2ED4),
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                            side: const BorderSide(
+                              width: 1,
+                              color: Color(0xFFA686FF),
+                            ),
+                          ),
+                          shadows: const [
+                            BoxShadow(
+                              color: Color(0xFF6938EF),
+                              blurRadius: 0,
+                              offset: Offset(0, 0),
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Clock In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                              height: 1.43,
+                              letterSpacing: 0.10,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(0, 1),
+                                  blurRadius: 16,
+                                  color: Color(0xFF2D1A62),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Clock In Notes (Optional)",
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Clock-in Notes",
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 18,
-                    horizontal: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
-                  ),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7A5AF8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                  ),
-                  onPressed: () {
-                    // aksi clock in final di sini
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Clock In success! (dummy)"),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    'Clock In',
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
