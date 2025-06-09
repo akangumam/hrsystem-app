@@ -18,8 +18,8 @@ class _AttendantClockInScreenState extends State<AttendantClockInScreen> {
 
   // Office Location (fix, sesuai request)
   static final LatLng officeLatLng = LatLng(
-    -6.482329872192783,
-    106.79298359395966,
+    -6.379878162378265,
+    106.69992409311826,
   );
 
   bool _isGettingLocation = false;

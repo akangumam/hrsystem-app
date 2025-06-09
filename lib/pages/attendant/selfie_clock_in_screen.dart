@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:geolocator/geolocator.dart';
-
-import 'selfie_clock_in_preview_screen.dart'; // Pastikan file preview sudah ada
+import 'package:face_camera/face_camera.dart';
+import 'selfie_clock_in_preview_screen.dart';
 
 class SelfieClockInScreen extends StatefulWidget {
   const SelfieClockInScreen({Key? key}) : super(key: key);
@@ -13,77 +11,72 @@ class SelfieClockInScreen extends StatefulWidget {
 }
 
 class _SelfieClockInScreenState extends State<SelfieClockInScreen> {
-  bool _loading = false;
-
-  // Open camera depan & simpan lokasi saat ini
-  Future<void> _openCamera() async {
-    setState(() => _loading = true);
-    try {
-      // Request location permission & get current position
-      LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        setState(() => _loading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Izin lokasi diperlukan!')),
-        );
-        return;
-      }
-      Position pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(
-        source: ImageSource.camera,
-        preferredCameraDevice: CameraDevice.front,
-        imageQuality: 90,
-        maxWidth: 1200,
-      );
-      setState(() => _loading = false);
-
-      if (pickedFile != null) {
-        // **Langsung push ke preview screen, tanpa konfirmasi**
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder:
-                (_) => SelfieClockInPreviewScreen(
-                  imageFile: File(pickedFile.path),
-                  latitude: pos.latitude,
-                  longitude: pos.longitude,
-                ),
-          ),
-        );
-      } else {
-        Navigator.of(context).pop(); // jika batal, balik ke halaman sebelumnya
-      }
-    } catch (e) {
-      setState(() => _loading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Gagal mengambil gambar: $e')));
-    }
-  }
+  late FaceCameraController controller;
 
   @override
   void initState() {
     super.initState();
-    // Kamera langsung terbuka saat masuk halaman
-    WidgetsBinding.instance.addPostFrameCallback((_) => _openCamera());
+    controller = FaceCameraController(
+      autoCapture: false,
+      defaultCameraLens: CameraLens.front,
+      onCapture: (File? image) {
+        if (image != null) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => SelfieClockInPreviewScreen(imagePath: image.path),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          if (_loading)
-            const Center(
-              child: CircularProgressIndicator(color: Color(0xFF7A5AF8)),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF7F4FA),
+        elevation: 0,
+        centerTitle: true,
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Image.asset('assets/icons/back.png', width: 32),
+          ),
+        ),
+        title: const Text(
+          'Selfie To Clock In',
+          style: TextStyle(
+            color: Color(0xFF101828),
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            fontFamily: 'Roboto',
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: 340,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: SmartFaceCamera(
+                controller: controller,
+                message: 'Center your face in the square',
+                showControls:
+                    true, // hanya tombol capture, tidak ada switch camera
+              ),
             ),
-        ],
+          ),
+        ),
       ),
     );
   }
