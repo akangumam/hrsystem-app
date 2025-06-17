@@ -1,12 +1,21 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'attendant_screen.dart';
 import 'selfie_clock_in_screen.dart';
 
 class SelfieClockInPreviewScreen extends StatefulWidget {
   final String imagePath;
-  const SelfieClockInPreviewScreen({Key? key, required this.imagePath})
-    : super(key: key);
+  final double? latitude;
+  final double? longitude;
+  final DateTime? dateTime;
+  const SelfieClockInPreviewScreen({
+    Key? key,
+    required this.imagePath,
+    this.latitude,
+    this.longitude,
+    this.dateTime,
+  }) : super(key: key);
 
   @override
   State<SelfieClockInPreviewScreen> createState() =>
@@ -17,151 +26,32 @@ class _SelfieClockInPreviewScreenState
     extends State<SelfieClockInPreviewScreen> {
   final TextEditingController _notesController = TextEditingController();
 
-  void _showSuccessPopup() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      barrierColor: Colors.black.withOpacity(0.3),
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Stack(
-          children: [
-            // Efek blur pada background
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              child: Container(
-                color: Colors.transparent,
-                height: MediaQuery.of(context).size.height,
-              ),
-            ),
-            // Konten modal
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: const EdgeInsets.only(
-                  top: 36,
-                  left: 18,
-                  right: 18,
-                  bottom: 36,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF7A5AF8),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF7A5AF8).withOpacity(0.24),
-                            blurRadius: 16,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 56,
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    const Text(
-                      "Clock-In Successful!",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF1A1B1F),
-                        fontFamily: 'Roboto',
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      "You’re all set! Your clock-in was successful. Head over to your dashboard to see your assigned tasks.",
-                      style: TextStyle(
-                        color: Color(0xFF636A8F),
-                        fontSize: 13,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 28),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          padding: EdgeInsets.zero,
-                          backgroundColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(
-                            context,
-                          ).popUntil((route) => route.isFirst);
-                        },
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFF8861F2),
-                                Color(0xFF7544FB),
-                                Color(0xFF5A2ED4),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Go To Clock In Page",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 19,
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  String get formattedDate {
+    final dt = widget.dateTime ?? DateTime.now();
+    return DateFormat('dd/MM/yy HH:mm a').format(dt) + ' GMT +07:00';
   }
 
   @override
   Widget build(BuildContext context) {
-    final imageFile = File(widget.imagePath);
-
+    final lat = widget.latitude ?? 0.0;
+    final lng = widget.longitude ?? 0.0;
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FA),
+      backgroundColor: const Color(0xFFF7F4FA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF4F6FA),
+        backgroundColor: const Color(0xFFF7F4FA),
         elevation: 0,
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.all(8),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Image.asset('assets/icons/back.png', width: 32),
+            child: Icon(Icons.arrow_back, color: Colors.black54, size: 28),
           ),
         ),
         title: const Text(
@@ -174,173 +64,154 @@ class _SelfieClockInPreviewScreenState
           ),
         ),
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Konten Scroll
-            Padding(
-              padding: const EdgeInsets.only(bottom: 80),
-              child: ListView(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 16,
+                      offset: Offset(0, 6),
                     ),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(22),
-                          child: Transform(
-                            alignment: Alignment.center,
-                            transform: Matrix4.rotationY(3.1415926535),
-                            child: Image.file(
-                              imageFile,
-                              width: double.infinity,
-                              height: 380,
-                              fit: BoxFit.cover,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.file(
+                        File(widget.imagePath),
+                        height: 320,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Lat : $lat",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 18),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child:
-                              ElevatedButton.icon(
-                                icon: const Icon(
-                                  Icons.refresh,
-                                  color: Colors.white,
-                                  size: 28,
-                                ),
-                                label: const Text(
-                                  "Retake Photo",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    fontFamily: 'Roboto',
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  padding: EdgeInsets.zero,
-                                  backgroundColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) => const SelfieClockInScreen(),
-                                    ),
-                                  );
-                                },
-                              ).applyGradient(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 22),
-                  const Text(
-                    "Clock In Notes (Optional)",
-                    style: TextStyle(
-                      color: Color(0xFF475467),
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _notesController,
-                    minLines: 3,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      hintText: "Clock-in Notes",
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: const EdgeInsets.all(18),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFEAECF0),
-                          width: 1,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFEAECF0),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
-              ),
-            ),
-            // Tombol Clock In fixed di bawah
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child:
-                      ElevatedButton(
-                        child: const Text(
-                          "Clock In",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            fontFamily: 'Roboto',
-                            color: Colors.white,
+                          Text(
+                            "Long : $lng",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
                           ),
-                        ),
+                          Text(
+                            formattedDate,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          padding: EdgeInsets.zero,
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: const Color(0xFF7A5AF8),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(24),
                           ),
                         ),
-                        onPressed: _showSuccessPopup,
-                      ).applyGradient(),
+                        icon: const Icon(Icons.refresh, color: Colors.white),
+                        label: const Text(
+                          "Retake Photo",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SelfieClockInScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Clock In Notes (Optional)",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _notesController,
+                minLines: 3,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: "Clock-in Notes",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF7A5AF8),
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                  onPressed: () {
+                    // Simulasi clock-in success, langsung ke AttendantScreen
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AttendantScreen(),
+                      ),
+                      (route) => false,
+                    );
+                  },
+                  child: const Text(
+                    "Clock In",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-// Helper Extension untuk Gradient Button
-extension GradientButton on ElevatedButton {
-  Widget applyGradient() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF8861F2), Color(0xFF7544FB), Color(0xFF5A2ED4)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: this,
     );
   }
 }

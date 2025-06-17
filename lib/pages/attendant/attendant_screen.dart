@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'attendant_clock_in_screen.dart';
 
 class AttendantScreen extends StatelessWidget {
+  // ignore: use_super_parameters
   const AttendantScreen({Key? key}) : super(key: key);
 
   @override
@@ -141,6 +142,7 @@ class TotalWorkingHourCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.03),
               blurRadius: 16,
               offset: const Offset(0, 4),
@@ -351,6 +353,7 @@ class AttendantStoryCard extends StatelessWidget {
   final String clockIn;
   final String clockOut;
 
+  // ignore: use_super_parameters
   const AttendantStoryCard({
     Key? key,
     required this.date,

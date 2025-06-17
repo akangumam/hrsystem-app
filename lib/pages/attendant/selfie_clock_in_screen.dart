@@ -4,6 +4,7 @@ import 'package:face_camera/face_camera.dart';
 import 'selfie_clock_in_preview_screen.dart';
 
 class SelfieClockInScreen extends StatefulWidget {
+  // ignore: use_super_parameters
   const SelfieClockInScreen({Key? key}) : super(key: key);
 
   @override

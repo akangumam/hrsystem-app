@@ -7,6 +7,7 @@ import 'leave/leave_screen.dart';
 import '../widgets/custom_bottom_navbar.dart'; // Pastikan path sudah benar
 
 class MainScreen extends StatefulWidget {
+  // ignore: use_super_parameters
   const MainScreen({Key? key}) : super(key: key);
 
   @override
