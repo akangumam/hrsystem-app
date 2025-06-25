@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:ui';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'attendant_screen.dart';
 import 'selfie_clock_in_screen.dart';
+import '../main_screen.dart'; // Atur path sesuai struktur projekmu
 
 class SelfieClockInPreviewScreen extends StatefulWidget {
   final String imagePath;
@@ -25,6 +27,118 @@ class SelfieClockInPreviewScreen extends StatefulWidget {
 class _SelfieClockInPreviewScreenState
     extends State<SelfieClockInPreviewScreen> {
   final TextEditingController _notesController = TextEditingController();
+
+  void _showSuccessPopup() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.4),
+      builder: (context) {
+        return Container(
+          decoration: const BoxDecoration(color: Colors.transparent),
+          child: Stack(
+            children: [
+              // Blur effect
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Container(
+                  color: Colors.transparent,
+                  height: MediaQuery.of(context).size.height,
+                ),
+              ),
+              // Modal content
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(
+                    top: 36,
+                    left: 18,
+                    right: 18,
+                    bottom: 36,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(34),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF7A5AF8),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF7A5AF8).withOpacity(0.24),
+                              blurRadius: 16,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 54,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "Clock-In Successful!",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "You're all set! Your clock-in was successful. Head over to your dashboard to see your assigned tasks.",
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF7A5AF8),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // close modal
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => MainScreen(initialIndex: 1),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                          child: const Text(
+                            "Go To Clock In Page",
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -86,11 +200,17 @@ class _SelfieClockInPreviewScreenState
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: Image.file(
-                        File(widget.imagePath),
-                        height: 320,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                      child: Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(
+                          math.pi,
+                        ), // FLIP horizontal agar tidak mirror
+                        child: Image.file(
+                          File(widget.imagePath),
+                          height: 320,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -188,16 +308,7 @@ class _SelfieClockInPreviewScreenState
                       borderRadius: BorderRadius.circular(32),
                     ),
                   ),
-                  onPressed: () {
-                    // Simulasi clock-in success, langsung ke AttendantScreen
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AttendantScreen(),
-                      ),
-                      (route) => false,
-                    );
-                  },
+                  onPressed: _showSuccessPopup,
                   child: const Text(
                     "Clock In",
                     style: TextStyle(

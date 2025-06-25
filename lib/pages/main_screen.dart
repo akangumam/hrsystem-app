@@ -4,20 +4,19 @@ import 'attendant/attendant_screen.dart';
 import 'task/task_screen.dart';
 import 'expense/expense_screen.dart';
 import 'leave/leave_screen.dart';
-import '../widgets/custom_bottom_navbar.dart'; // Pastikan path sudah benar
+import '../widgets/custom_bottom_navbar.dart';
 
 class MainScreen extends StatefulWidget {
-  // ignore: use_super_parameters
-  const MainScreen({Key? key}) : super(key: key);
+  final int initialIndex;
+  const MainScreen({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
 
-  // List of screen widgets for each tab
   final List<Widget> _screens = [
     HomeScreen(),
     AttendantScreen(),
@@ -25,6 +24,12 @@ class _MainScreenState extends State<MainScreen> {
     ExpenseScreen(),
     LeaveScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
